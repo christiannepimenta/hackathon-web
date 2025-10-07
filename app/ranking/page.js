@@ -1,4 +1,3 @@
-// app/ranking/page.js
 export const revalidate = 20;
 
 async function getData() {
@@ -13,24 +12,17 @@ export default async function Ranking() {
   return (
     <main className="grid">
       <section className="card">
-        <div className="kv" style={{justifyContent:"space-between"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <h2 style={{margin:0}}>Ranking</h2>
-          <span className="badge">atualiza a cada {revalidate}s</span>
+          <span className="badge">auto {revalidate}s</span>
         </div>
         <div className="table-wrap" style={{marginTop:12}}>
           <table>
             <thead>
-              <tr>
-                <th>#</th>
-                <th>Equipe</th>
-                <th>Canvas</th>
-                <th>MVP</th>
-                <th>Pitch</th>
-                <th>Total</th>
-              </tr>
+              <tr><th>#</th><th>Equipe</th><th>Canvas</th><th>MVP</th><th>Pitch</th><th>Total</th></tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {rows.map(r=>(
                 <tr key={r.posicao}>
                   <td>{r.posicao}</td>
                   <td>{r.team_numero} — {r.team_nome}</td>
@@ -43,9 +35,7 @@ export default async function Ranking() {
             </tbody>
           </table>
         </div>
-        <p className="note" style={{marginTop:10}}>
-          Empate: maior Pitch → depois maior MVP → depois maior Canvas.
-        </p>
+        <p className="note">Desempate: Pitch → MVP → Canvas.</p>
       </section>
     </main>
   );

@@ -1,0 +1,95 @@
+/* app/globals.css */
+:root{
+  --bg:#0b1020;
+  --panel:#121731;
+  --muted:#9aa3b2;
+  --text:#e9ecf1;
+  --brand:#6ea8fe;
+  --brand-2:#3a7bfd;
+  --ok:#16a34a;
+  --warn:#eab308;
+  --err:#ef4444;
+  --card:#0f1428;
+  --border:rgba(255,255,255,.08);
+  --shadow:0 6px 22px rgba(0,0,0,.35);
+  --radius:14px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #1a2458 0%, transparent 60%),
+    radial-gradient(1200px 600px at 110% -10%, #1b2a6b 0%, transparent 60%),
+    var(--bg);
+}
+
+a{color:var(--brand); text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{
+  max-width:980px; margin:32px auto; padding:0 20px;
+}
+
+.nav{
+  display:flex; gap:14px; align-items:center; flex-wrap:wrap; opacity:.95;
+}
+.nav a{
+  padding:8px 12px; border:1px solid var(--border); border-radius:10px;
+  background:rgba(255,255,255,.02);
+}
+.nav a:hover{background:rgba(255,255,255,.05)}
+
+.hero{
+  margin:14px 0 22px;
+  color:#fff;
+  text-shadow:0 6px 30px rgba(58,123,253,.5);
+}
+
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px; box-shadow:var(--shadow);
+}
+
+.grid{display:grid; gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:780px){ .grid-2{grid-template-columns:1fr} }
+
+.input, select, .btn{
+  font:inherit; color:var(--text);
+  border-radius:10px; border:1px solid var(--border);
+  background:#0b1124; padding:10px 12px;
+}
+select{background:#0b1124}
+.input:focus, select:focus{outline:2px solid var(--brand-2)}
+
+.btn{
+  background:linear-gradient(180deg, var(--brand), var(--brand-2));
+  border:none; cursor:pointer; font-weight:600;
+  box-shadow:0 10px 30px rgba(62,126,253,.35);
+}
+.btn.secondary{
+  background:transparent; border:1px solid var(--border);
+}
+.btn:disabled{opacity:.6; cursor:not-allowed}
+
+.table-wrap{overflow:auto; border-radius:var(--radius); border:1px solid var(--border)}
+table{width:100%; border-collapse:collapse; background:var(--card)}
+th,td{padding:12px 14px; border-bottom:1px solid var(--border)}
+thead th{position:sticky; top:0; background:#12173a; text-align:left}
+tbody tr:hover{background:#0f1531}
+td.b{font-weight:700}
+
+.kv{display:flex; gap:10px; align-items:center}
+.badge{display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid var(--border); background:rgba(255,255,255,.05)}
+
+.note{font-size:.9rem; color:var(--muted)}
+pre.log{
+  white-space:pre-wrap; word-break:break-word; margin-top:14px;
+  background:#0a0f23; border:1px solid var(--border); border-radius:var(--radius); padding:12px;
+}

@@ -1,41 +1,80 @@
+// app/judge/page.jsx
 "use client";
-import { useEffect, useState } from "react";
+
+import { useState, useEffect } from "react";
+import RequireRole from "../components/RequireRole";
+import { getToken } from "../lib/auth";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
 export default function Judge() {
+  return (
+    <RequireRole roles={["judge", "admin"]}>
+      <JudgeInner />
+    </RequireRole>
+  );
+}
+
+function JudgeInner() {
   const [email, setEmail] = useState("");
   const [team, setTeam] = useState(1);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
 
-  // pega e-mail logado no NextAuth (cookie de sessão)
+  // sliders
+  const [c20, setC20] = useState(0);
+  const [m30, setM30] = useState(0);
+  const [p1, setP1] = useState(0);
+  const [p2, setP2] = useState(0);
+  const [p3, setP3] = useState(0);
+  const [p4, setP4] = useState(0);
+  const [px, setPx] = useState(0);
+
   useEffect(() => {
-    fetch("/api/auth/session").then(r=>r.json()).then(s=>{
-      setEmail(s?.user?.email || "");
-    });
+    // pega user do localStorage só para mostrar o email
+    try {
+      const u = JSON.parse(localStorage.getItem("user") || "null");
+      setEmail(u?.email || "");
+    } catch {}
   }, []);
 
-  const [c20,setC20]=useState(0); const [m30,setM30]=useState(0);
-  const [p1,setP1]=useState(0), [p2,setP2]=useState(0), [p3,setP3]=useState(0), [p4,setP4]=useState(0), [px,setPx]=useState(0);
-
-  async function post(body){
-    if(!email) { setMsg("Faça login em /api/auth/signin"); return; }
-    setBusy(true); setMsg("");
-    try{
-      const r = await fetch(`${API}/scores`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
-      const j = await r.json(); setMsg(JSON.stringify(j,null,2));
-    }catch(e){ setMsg(String(e)); }
-    setBusy(false);
+  async function post(body) {
+    setMsg("");
+    const tok = getToken();
+    if (!tok) {
+      setMsg("Faça login em /login");
+      return;
+    }
+    setBusy(true);
+    try {
+      const r = await fetch(`${API}/scores`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tok}`,
+        },
+        body: JSON.stringify(body),
+      });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j?.error || "Erro ao salvar");
+      setMsg("Salvo com sucesso ✅");
+    } catch (e) {
+      setMsg(String(e.message || e));
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <main className="grid">
       <section className="card">
-        <h2 style={{marginTop:0}}>Painel do Juiz</h2>
-        <p className="note">Logado como: <b>{email || "não autenticado"}</b> — <a href="/api/auth/signin">Entrar</a> / <a href="/api/auth/signout">Sair</a></p>
+        <h2 style={{ marginTop: 0 }}>Painel do Juiz</h2>
+        <p className="note">
+          Logado como: <b>{email || "—"}</b>
+        </p>
         <label>Número do time
-          <input className="input" type="number" min={1} max={10} value={team} onChange={e=>setTeam(Number(e.target.value))}/>
+          <input className="input" type="number" min={1} max={10}
+                 value={team} onChange={(e)=>setTeam(Number(e.target.value))}/>
         </label>
       </section>
 
@@ -72,34 +111,4 @@ export default function Judge() {
           </label>
           <label>Modelo
             <input type="range" min="0" max="100" value={p2} onChange={e=>setP2(Number(e.target.value))}/>
-            <span className="badge">{p2}</span>
-          </label>
-          <label>Inovação
-            <input type="range" min="0" max="100" value={p3} onChange={e=>setP3(Number(e.target.value))}/>
-            <span className="badge">{p3}</span>
-          </label>
-          <label>Viabilidade
-            <input type="range" min="0" max="100" value={p4} onChange={e=>setP4(Number(e.target.value))}/>
-            <span className="badge">{p4}</span>
-          </label>
-          <label>Extra (opcional)
-            <input type="range" min="0" max="100" value={px} onChange={e=>setPx(Number(e.target.value))}/>
-            <span className="badge">{px}</span>
-          </label>
-        </div>
-        <div style={{marginTop:12}}>
-          <button className="btn" disabled={busy}
-            onClick={()=>post({
-              judge_email:email, team_numero:team, etapa:"pitch",
-              impacto_0a100:p1, modelo_0a100:p2, inovacao_0a100:p3,
-              viabilidade_0a100:p4, criterio_extra_0a100:px
-            })}>
-            Salvar Pitch
-          </button>
-        </div>
-      </section>
-
-      {msg && <pre className="log">{msg}</pre>}
-    </main>
-  );
-}
+            <
